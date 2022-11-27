@@ -9,7 +9,7 @@ import dash_bootstrap_components as dbc
 import plotly.express as px
 import pandas as pd
 
-app = Dash(external_stylesheets=[dbc.themes.COSMO])
+app = Dash(external_stylesheets=[dbc.themes.DARKLY])
 
 
 @cache
@@ -21,9 +21,13 @@ def load_sentiment_data() -> pd.DataFrame:
 def get_by_month_summarization() -> pd.DataFrame:
     df = load_sentiment_data()
     df = df[["branch", "date", "polarity", "score"]].groupby(["branch", "date", "polarity"]).count().reset_index().rename(columns={"score": "count"})
+    df = df[df["polarity"] != "NEU"]
+    full_count_df = df.groupby(["branch", "date"]).sum("count").reset_index().rename(columns={"count": "sum"})
+    df = df.merge(full_count_df, on=["branch", "date"])
+    df["prop"] = df["count"] / df["sum"]
     return df
 
-fig = px.line(get_by_month_summarization(), x="date", y="count", facet_col="branch", color="polarity")
+fig = px.area(get_by_month_summarization(), x="date", y="prop", facet_col="branch", color="polarity", template="plotly_dark")
 
 app.layout = html.Div(
     children=[
@@ -38,11 +42,6 @@ app.layout = html.Div(
             html.Div(
                 id="page-content",
                 children=[
-                    html.Div(
-                        children="""
-        Dash: A web application framework for your data.
-    """
-                    ),
                     dcc.Graph(id="example-graph", figure=fig),
                 ],
             ),
