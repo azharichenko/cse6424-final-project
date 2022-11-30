@@ -17,3 +17,6 @@ jupyterlab = "*"
 
 [requires]
 python_version = "3.1"
+
+[pipenv]
+allow_prereleases = true
