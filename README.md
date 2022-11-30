@@ -35,4 +35,20 @@ That's seriously it, no more work needs to be done!!!!
 
 ## How to obtain data and perform experiment
 
+All the code to perform the experiments are within the `data_scrape_and_sentiment` directory. First to get into it, run the following command.
 
+```bash
+pipenv run jupyter lab
+```
+
+This will open juypter lab which is needed to run the code in the jupyter notebooks in that directory. The first notebook is the text extract, use this to start collecting the all the subreddit posts using various keywords. This will take some time to run through, but after that you will have a a set of the raw large scale text data.
+
+After that, move over to the sentiment data notebook, where we will load a state of the art sentiment transformer model to condense the large corpus of text data down to individual sentiment for each post. After this is done you should have the data now condensed down to purely sentiment by branch.
+
+From here, add this data to the `raw` directory and run the following script to help condense and reorient the data into a more analytical and usable form for the dashboard
+
+```
+pipenv run python data_preparation.py
+```
+
+After that, you can start using the dashboard in order to start look at how various events reflect in changes in this data.
